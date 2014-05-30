@@ -30,6 +30,47 @@
 
 #import <Cocoa/Cocoa.h>
 
+@class SFBPopover;
+
+// ========================================
+// SFBPopover Delegate
+// ========================================
+@protocol SFBPopoverDelegate <NSObject>
+@optional
+/**
+ When the -closePopover: method is invoked, this method is called to give a change for the delegate to prevent it from closing. Returning NO for this delegate method will prevent the popover being closed. This delegate method does not apply to the -forceClosePopover: method, which will close the popover regardless of what the delegate returns.
+ @param popover the @class SFBpopover object that is controlling the popover
+ @returns whether the popover should close or not
+ */
+
+- (BOOL)popoverShouldClose:(SFBPopover*)popover;
+
+/**
+ Invoked right before the popover shows on screen
+ @param popover the @class SFBpopover object that is controlling the popover
+ */
+- (void)popoverWillShow:(SFBPopover*)popover;
+
+/**
+ Invoked right after the popover shows on screen
+ @param popover the @class SFBpopover object that is controlling the popover
+ */
+- (void)popoverDidShow:(SFBPopover*)popover;
+
+/**
+ Invoked right before the popover closes
+ @param popover the @class SFBpopover object that is controlling the popover
+ */
+- (void)popoverWillClose:(SFBPopover*)popover;
+
+/**
+ Invoked right before the popover closes
+ @param popover the @class SFBpopover object that is controlling the popover
+ */
+- (void)popoverDidClose:(SFBPopover*)popover;
+@end
+
+
 // ========================================
 // Positioning constants
 // ========================================
@@ -56,6 +97,7 @@ typedef enum SFBPopoverPosition SFBPopoverPosition;
 
 // ========================================
 // Properties
+@property (nonatomic, assign) id<SFBPopoverDelegate> delegate;
 @property (nonatomic, assign) BOOL animates;
 @property (nonatomic, assign) BOOL closesWhenPopoverResignsKey;
 @property (nonatomic, assign) BOOL closesWhenApplicationBecomesInactive;

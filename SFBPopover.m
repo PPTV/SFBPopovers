@@ -200,6 +200,11 @@
 {
 	if([_popoverWindow isVisible])
 		return;
+    
+    if (self.delegate &&
+        [self.delegate respondsToSelector:@selector(popoverWillShow:)]) {
+        [self.delegate popoverWillShow:self];
+    }
 
 	if(chooseBestLocation)
 		[_popoverWindow setPopoverPosition:[self bestPositionInWindow:window atPoint:point]];
@@ -239,6 +244,18 @@
 {
 	if(![_popoverWindow isVisible])
 		return;
+    
+    if (self.delegate &&
+        [self.delegate respondsToSelector:@selector(popoverShouldClose:)]) {
+        if (![self.delegate popoverShouldClose:self]) {
+            return ;
+        }
+    }
+    
+    if (self.delegate &&
+        [self.delegate respondsToSelector:@selector(popoverWillClose:)]) {
+        [self.delegate popoverWillClose:self];
+    }
 
 //	[NSAnimationContext beginGrouping];
 //	[[NSAnimationContext currentContext] setDuration:0];
@@ -251,6 +268,11 @@
 		NSWindow *parentWindow = [_popoverWindow parentWindow];
 		[parentWindow removeChildWindow:_popoverWindow];
 		[_popoverWindow orderOut:sender];
+        
+        if (self.delegate &&
+            [self.delegate respondsToSelector:@selector(popoverDidClose:)]) {
+            [self.delegate popoverDidClose:self];
+        }
 	}
 }
 
@@ -407,7 +429,19 @@
 		[parentWindow removeChildWindow:_popoverWindow];
 		[_popoverWindow orderOut:nil];
 		[_popoverWindow setAlphaValue:1];
+        
+        if (self.delegate &&
+            [self.delegate respondsToSelector:@selector(popoverDidClose:)]) {
+            [self.delegate popoverDidClose:self];
+        }
 	}
+    
+    if (flag && 1 == [_popoverWindow alphaValue]) {
+        if (self.delegate &&
+            [self.delegate respondsToSelector:@selector(popoverDidShow:)]) {
+            [self.delegate popoverDidShow:self];
+        }
+    }
 }
 
 @end
